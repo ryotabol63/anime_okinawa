@@ -22,6 +22,8 @@ import random
 import sys
 import glob
 import serial
+import pandas as pd
+import numpy as np
  
 
 # WONO WIRELESSのシリアル電文パーサなどのAPIのインポート
@@ -172,13 +174,22 @@ if(__name__ == "__main__"):
     #print(threadlist)
     while(True):
         try:
-
-            print(i)
-            print(tagprintlist)
-
-            i += 1
-            tagprintlist = []
             time.sleep(3)
+            print(i)
+            #print(tagprintlist)
+            if len(tagprintlist) > 0:
+                tag_df = pd.DataFrame(tagprintlist)
+                maxlqlist = []
+                for tag in tag_df.groupby(tag_df.columns[0]):
+                    #print(tag)
+                    #print(tag[1][tag[1].columns[1]].idxmax())
+                    #print(tag[1][tag[1].columns[1]].idxmax())
+                    maxlq = tag[1].loc[[tag[1][tag[1].columns[1]].idxmax()],:]
+                    print(maxlq)
+                    maxlqlist.append(np.ravel((maxlq.values)).tolist())
+                print(maxlqlist)
+                i += 1
+                tagprintlist = []
         except(KeyboardInterrupt):
             flag = False
             break
