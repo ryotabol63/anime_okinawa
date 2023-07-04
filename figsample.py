@@ -36,8 +36,6 @@ def jointext(textlist):
     return printtext_str
 
 
-
-
 # bboxの作成
 boxdic = {
     "facecolor" : "lightgreen",
@@ -45,6 +43,8 @@ boxdic = {
     "boxstyle" : "Round",
     "linewidth" : 2
 }
+
+
 textlist = ['3JKU','IJKK','9KJI','9JHK','8JKJ', '9KJI']
 
 textlist_str = jointext(textlist)
