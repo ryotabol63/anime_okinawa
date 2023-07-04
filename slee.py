@@ -13,7 +13,7 @@ import csv
 #import os
 #import copy
 import threading
-#import time
+import time
 import datetime
 from optparse import *
 import random
@@ -24,7 +24,9 @@ import glob
 import serial
 import pandas as pd
 import numpy as np
- 
+import matplotlib.pyplot as plt
+import math
+from matplotlib import animation
 
 # WONO WIRELESSのシリアル電文パーサなどのAPIのインポート
 sys.path.append('./MNLib/')
@@ -149,9 +151,55 @@ def pal_script(open_port, nm):
     print("*** Exit App_PAL Viewer ***")
 
 
+def _update(frame, i):
+    # 現在のグラフを消去する
+    global tagprintlist
+    global flag
+    ax.cla()
+    ax.set_xlim(0, 6)
+    ax.set_ylim(0, 6)
+    N = 200 #曲線のなめらかさ
+    pi_2 = 2.0 * math.pi
+    t = np.linspace(0,pi_2,N)#媒介変数
+    i = 0
+    try:
+        print(i)
+        #print(tagprintlist)
+        if len(tagprintlist) > 0:
+            tag_df = pd.DataFrame(tagprintlist)
+            maxlqlist = []
+            for tag in tag_df.groupby(tag_df.columns[0]):
+                #print(tag)
+                #print(tag[1][tag[1].columns[1]].idxmax())
+                #print(tag[1][tag[1].columns[1]].idxmax())
+                maxlq = tag[1].loc[[tag[1][tag[1].columns[1]].idxmax()],:]
+                print(maxlq)
+                maxlqlist.append(np.ravel((maxlq.values)).tolist())
+            print(maxlqlist)
+            i += 1
+            tagprintlist = []
+    except(KeyboardInterrupt):
+        flag = False
 
 
-import time
+
+    # データを更新 (追加) する
+    cirx1 = 1 + 0.5 * np.cos(t) + random.random()
+    ciry1 = 1 + 0.5 * np.sin(t)
+    # グラフを再描画する
+    plt.text(3,3,frame)
+    ax.plot(cirx1,ciry1,'-', color='blue')
+    
+
+
+
+
+
+
+
+
+
+
 
 flag = True
 
@@ -171,7 +219,32 @@ if(__name__ == "__main__"):
             break
         except:
             pass
+    time.sleep(1)
     #print(threadlist)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+
+    params = {
+        'fig': fig,
+        'func': _update,  # グラフを更新する関数
+        'fargs': (i,),  # 関数の引数 (フレーム番号を除く)
+        'interval': 500,  # 更新間隔 (ミリ秒)
+        'frames': np.arange(0, 10, 0.1),  # フレーム番号を生成するイテレータ
+        'repeat': False,  # 繰り返さない
+    }
+
+    anime = animation.FuncAnimation(**params)
+    plt.show()
+
+    flag = False
+
+    '''
+
+  
+
+
+
     while(True):
         try:
             time.sleep(3)
@@ -193,3 +266,5 @@ if(__name__ == "__main__"):
         except(KeyboardInterrupt):
             flag = False
             break
+            
+    '''
