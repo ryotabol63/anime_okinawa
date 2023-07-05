@@ -160,15 +160,18 @@ def _update(frame, i):
     #tex2.cla()
     #ax.set_xlim(0, 6)
     #ax.set_ylim(0, 6)
-    tex1.set_text(str(random.random()))
     #tex2 = ax.text(6, 5, [], size=30, horizontalalignment="center", verticalalignment="top")
     N = 200 #曲線のなめらかさ
     pi_2 = 2.0 * math.pi
     t = np.linspace(0,pi_2,N)#媒介変数
     i = 0
+    lefttext = 'NULL'
+    righttext = 'NULL'
     try:
         print(i)
         #print(tagprintlist)
+        leftlist = []
+        rightlist = []        
         if len(tagprintlist) > 0:
             tag_df = pd.DataFrame(tagprintlist)
             maxlqlist = []
@@ -176,10 +179,25 @@ def _update(frame, i):
                 #print(tag)
                 #print(tag[1][tag[1].columns[1]].idxmax())
                 #print(tag[1][tag[1].columns[1]].idxmax())
-                maxlq = tag[1].loc[[tag[1][tag[1].columns[1]].idxmax()],:]
+                maxlq = tag[1].loc[[tag[1][tag[1].columns[1]].idxmax()],:].reset_index(drop=True)
+                if int(maxlq.iloc[0][2]) == 2:
+                    leftlist.append(maxlq.iloc[0][0])
+                else:
+                    rightlist.append(maxlq.iloc[0][0])
+
+                #if maxlq.loc[maxlq.columns[2]] == "2":
+                 #   maxlq.loc[maxlq.columns[2]]
                 print(maxlq)
-                maxlqlist.append(np.ravel((maxlq.values)).tolist())
-            print(maxlqlist)
+                #maxlqlist.append(np.ravel((maxlq.values)).tolist())
+            print("left")
+            print(leftlist)
+            print("right")
+            print(rightlist)
+            lefttext = jointext(leftlist)
+            righttext = jointext(rightlist)
+            tex1.set_text(lefttext)
+            tex2.set_text(righttext)
+            #print(maxlqlist)
             i += 1
             tagprintlist = []
     except(KeyboardInterrupt):
@@ -188,8 +206,8 @@ def _update(frame, i):
 
 
     # データを更新 (追加) する
-    cirx1 = 1 + 0.5 * np.cos(t) + random.random()
-    ciry1 = 1 + 0.5 * np.sin(t)
+    #cirx1 = 1 + 0.5 * np.cos(t) + random.random()
+    #ciry1 = 1 + 0.5 * np.sin(t)
     # グラフを再描画する
     #ax.text(3,3,frame)
     #ax.plot(cirx1,ciry1,'-', color='blue')
@@ -198,20 +216,25 @@ def _update(frame, i):
 
 
 def jointext(textlist):
-    printtext = []
-    isodd = True
-    for text in textlist:
-        if isodd:
-            firsttext = text
-            isodd = False
-        else:
-            addtext = firsttext + '  ' + text
-            printtext.append(addtext)
-            isodd = True
-    if not isodd:
-        printtext.append(firsttext + '      ')
-    printtext_str = "\n".join(printtext)
-    return printtext_str
+    if len(textlist) == 0:
+        return 'NULL'
+    if len(textlist) == 1:
+        return textlist[0]
+    else:
+        printtext = []
+        isodd = True
+        for text in textlist:
+            if isodd:
+                firsttext = text
+                isodd = False
+            else:
+                addtext = firsttext + '  ' + text
+                printtext.append(addtext)
+                isodd = True
+        if not isodd:
+            printtext.append(firsttext + '      ')
+        printtext_str = "\n".join(printtext)
+        return printtext_str
 
 
 
@@ -277,8 +300,8 @@ if(__name__ == "__main__"):
     ax.plot([4.2, 4.2], [0.2, 5.5],color="black")
     ax.plot([7.8, 7.8], [0.2, 5.5],color="black")
 
-    tex1 = ax.text(2, 5, "hoge", size=30, horizontalalignment="center", verticalalignment="top", fontfamily = 'monospace')
-    #tex2, = ax.text(6, 5, [], size=30, horizontalalignment="center", verticalalignment="top")
+    tex1 = ax.text(2, 5, "NULL", size=30, horizontalalignment="center", verticalalignment="top", fontfamily = 'monospace')
+    tex2 = ax.text(6, 5, "NULL", size=30, horizontalalignment="center", verticalalignment="top", fontfamily = 'monospace')
 
 
     params = {
