@@ -118,7 +118,7 @@ def pal_script(open_port, nm):
                     RSID = 'No Relay'
                 else:
                     RSID = Data['RouterSID']
-                #print(Data)
+                print(Data)
                 #print(Data['ArriveTime'].strftime('%Y-%m-%d %H:%M:%S.%f')[:-3], end = ",")
                 #print(Data['LogicalID'], end = ",")
                 #print(Data['EndDeviceSID'], end = ",")
@@ -195,13 +195,13 @@ def _update(frame, i):
             print(rightlist)
             lefttext = jointext(leftlist)
             righttext = jointext(rightlist)
-            tex1.set_text(lefttext)
-            tex2.set_text(righttext)
             #print(maxlqlist)
             i += 1
             tagprintlist = []
     except(KeyboardInterrupt):
         flag = False
+    tex1.set_text(lefttext)
+    tex2.set_text(righttext)
 
 
 
@@ -262,7 +262,7 @@ if(__name__ == "__main__"):
             pass
     time.sleep(1)
     #print(threadlist)
-    fig = plt.figure(figsize=(10,10))
+    fig = plt.figure(figsize=(10,7))
     ax = fig.add_subplot(111)
     #ax_base = fig.add_subplot(111)
     ax2 = fig.add_subplot(121)
@@ -308,8 +308,8 @@ if(__name__ == "__main__"):
         'fig': fig,
         'func': _update,  # グラフを更新する関数
         'fargs': (i,),  # 関数の引数 (フレーム番号を除く)
-        'interval': 1500,  # 更新間隔 (ミリ秒)
-        'frames': np.arange(0, 10, 0.1),  # フレーム番号を生成するイテレータ
+        'interval': 2000,  # 更新間隔 (ミリ秒)
+        'frames': np.arange(0, 1000, 0.1),  # フレーム番号を生成するイテレータ
         'repeat': False,  # 繰り返さない
     }
 
